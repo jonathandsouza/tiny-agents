@@ -1,51 +1,59 @@
 name: Release
 
+# Trigger on every push to main branch
 on:
   push:
     branches:
       - main
 
+# Required permissions for semantic-release
 permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  id-token: write
+  contents: write      # To push tags and commits
+  issues: write        # To comment on issues
+  pull-requests: write # To comment on PRs
+  id-token: write      # For npm provenance
 
 jobs:
   release:
+    name: Release
     runs-on: ubuntu-latest
+    
     steps:
+      # Checkout with full history for semantic-release
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
 
+      # Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-          registry-url: 'https://registry.npmjs.org'
 
+      # Install dependencies
       - name: Install dependencies
         run: npm ci
 
-      - name: Debug NPM Token (remove after fixing)
+      # Configure Git user for commits
+      - name: Configure Git
         run: |
-          echo "Token exists: $([[ -n "$NPM_TOKEN" ]] && echo 'yes' || echo 'no')"
-          echo "Token length: ${#NPM_TOKEN}"
-          echo "Token prefix: ${NPM_TOKEN:0:8}"
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Verify NPM Authentication
+      # Setup NPM authentication
+      - name: Setup NPM Auth
         run: |
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-          npm whoami
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
+      # Run semantic-release
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: github-actions[bot]@users.noreply.github.com
         run: npx semantic-release

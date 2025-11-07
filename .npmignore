@@ -1,5 +1,11 @@
-node_modules/
-test/
-*.log
-docs/
+.git/
 .github/
+.husky/
+commitlint.config.js
+releaserc.json
+.releaserc.json
+agents/
+node_modules/
+*.log
+test/
+tests/
