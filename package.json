@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "release": "standard-version",
+    "postrelease": "git push --follow-tags origin main"
   },
   "repository": {
     "type": "git",
@@ -17,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/jonathandsouza/micro-agents/issues"
   },
-  "homepage": "https://github.com/jonathandsouza/micro-agents#readme"
+  "homepage": "https://github.com/jonathandsouza/micro-agents#readme",
+  "devDependencies": {
+    "standard-version": "^9.5.0"
+  }
 }
