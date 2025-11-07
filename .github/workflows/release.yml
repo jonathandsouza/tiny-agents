@@ -1,37 +1,32 @@
-name: Release Package
-
+name: Release
 on:
   push:
     branches:
       - main
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
-
+          node-version: 'lts/*'
+      
       - name: Install dependencies
-        run: npm install
-
-      - name: Bump version and generate changelog
-        run: npm run release
-
-      - name: Publish to npm
+        run: npm ci
+      
+      - name: Release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish
-
-      - name: Push changes and tags
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          tags: true
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
