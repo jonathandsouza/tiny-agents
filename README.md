@@ -32,7 +32,7 @@ Note: Make sure you have Node.js v18+ and npm v9+ installed.
 
 Tiny Agents integrates smoothly with your existing VS Code workspace through a simple JSON-based configuration. This setup allows you to register and load your agents automatically whenever your project opens — no additional tooling required.
 
-## 🧰 Configure the Workspace Settings
+### 🧰 Configure the Workspace Settings
 
 To enable Tiny Agents in VS Code, you need to update your workspace settings file (.vscode/settings.json).
 This tells VS Code where to locate and activate the available agent definitions.
@@ -45,7 +45,7 @@ This tells VS Code where to locate and activate the available agent definitions.
 }
 ```
 
-## 🔍 Explanation
+### 🔍 Explanation
 
 chat.modeFilesLocations — This is the setting VS Code uses to locate mode or agent definition files that extend its AI chat capabilities.
 
